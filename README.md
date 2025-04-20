@@ -37,6 +37,9 @@ $ uv self update
 ```
 - 初始化项目环境：
 ```bash
+# Clone the repository.
+$ git clone https://github.com/zjf2671/hh-mcp-comfyui.git
+
 $ cd hh-mcp-comfyui
 
 # Initialized venv
@@ -161,6 +164,7 @@ npx @modelcontextprotocol/inspector
 - 默认工作流为`t2image_bizyair_flux`
 - 图片尺寸默认为1024x1024
 - 服务启动时会自动加载workflows目录下的所有JSON工作流文件
+- 如果使用你本地的comfyui工作流的话，需要导出(API)的JSON格式，并放入workflows目录中
 
 ---
 ## 如有问题可以到公众号中联系我：
