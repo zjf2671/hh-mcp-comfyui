@@ -59,8 +59,10 @@ Audited 29 package in 0.02ms
 ```bash
 $ cd hh-mcp-comfyui
 # 创建工作流没有这个目录执行下面进行创建（这个目录位置不能动）
+
 $ mkdir src\hh\workflows
 #复制样例工作的工作流目录
+
 $ cp .\example\workflows\* .\src\hh\workflows\
 
 ```
