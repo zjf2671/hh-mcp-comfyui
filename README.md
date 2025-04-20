@@ -11,17 +11,17 @@
 - 自动加载workflows目录下的工作流文件作为资源
 ## 效果
 
-- Cherry Studio中使用效果
+- **Cherry Studio中使用效果**
 ![alt text](images/image.png)
 
-- Cline中使用效果
+- **Cline中使用效果**
 ![alt text](images/cline_gen_image.png)
 ![alt text](images/ComfyUI_00020_.png)
 
 ## 安装依赖
 
-1. 确保已安装Python 3.13+
-2. 使用uv管理Python环境：
+**1. 确保已安装Python 3.13+**
+**2. 使用uv管理Python环境：**
 - 安装uv:
 ```bash
 # On macOS and Linux.
