@@ -37,6 +37,9 @@ $ uv self update
 ```
 - 初始化项目环境：
 ```bash
+# Clone the repository.
+$ git clone https://github.com/zjf2671/hh-mcp-comfyui.git
+
 $ cd hh-mcp-comfyui
 
 # Initialized venv
