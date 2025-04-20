@@ -51,12 +51,20 @@ def load_workflow(workflow_name: Optional[str] = None) -> Dict[str, Any]:
         logger.error(f"Error loading workflow {workflow_path}: {e}")
         raise
 
-def find_node_by_class_type(workflow: Dict[str, Any], class_type: str) -> Optional[str]:
-    """Finds the first node ID matching the given class_type."""
+def find_node_by_class_type(workflow: Dict[str, Any], class_types: list[str]) -> Optional[str]:
+    """Finds the first node ID matching any of the given class_types."""
     for node_id, node_data in workflow.items():
-        if node_data.get("class_type") == class_type:
+        if node_data.get("class_type") in class_types:
             return node_id
     return None
+def find_latent_by_class_type(workflow: Dict[str, Any]) -> Optional[str]:
+    """Finds the first node ID matching any of the given class_types."""
+    LATENT_IMAGE_TYPES = [
+        "EmptyLatentImage",  # Standard
+        "BizyAir_CogView4_6B_Pipe",  # Custom variant
+        "EmptyLatentImageAdvanced"  # Advanced variant
+    ]
+    return find_node_by_class_type(workflow, LATENT_IMAGE_TYPES)
 
 def find_save_image_node(workflow: Dict[str, Any]) -> Optional[str]:
     """Finds the node ID for saving image by class type."""
@@ -85,7 +93,8 @@ def find_random_seed_node(workflow: Dict[str, Any]) -> Optional[str]:
         "KSampler",  # Standard sampler
         "KSamplerAdvanced",  # Advanced variant
         "RandomNoise",  # Generic noise
-        "RandomSeed"  # Generic seed
+        "RandomSeed",  # Generic seed
+        "BizyAir_CogView4_6B_Pipe"  # CogView4
     ]
     
     # Find first node with supported random seed type
@@ -105,7 +114,8 @@ def find_positive_prompt_node(workflow: Dict[str, Any]) -> Optional[str]:
         "CLIPTextEncode",  # Standard
         "BizyAir_CLIPTextEncode",  # BizyAir custom
         "CLIPTextEncodeSDXL",  # SDXL variant
-        "CLIPTextEncodeAdvanced"  # Advanced variant
+        "CLIPTextEncodeAdvanced",  # Advanced variant
+        "BizyAir_CogView4_6B_Pipe"  # CogView4
     ]
     
     # Find first node with supported CLIP encoder type
@@ -133,7 +143,7 @@ def modify_workflow(workflow: Dict[str, Any], prompt: str, width: int, height: i
         # Consider raising an error or providing a more robust finding mechanism
 
     # Modify latent image size
-    latent_image_node_id = find_node_by_class_type(modified_workflow, "EmptyLatentImage")
+    latent_image_node_id = find_latent_by_class_type(modified_workflow)
     if latent_image_node_id and "inputs" in modified_workflow[latent_image_node_id]:
         modified_workflow[latent_image_node_id]["inputs"]["width"] = width
         modified_workflow[latent_image_node_id]["inputs"]["height"] = height

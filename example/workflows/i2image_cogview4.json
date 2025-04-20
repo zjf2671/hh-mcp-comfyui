@@ -1,0 +1,36 @@
+{
+  "1": {
+    "inputs": {
+      "prompt": "画一个现代科技感的MCP工具界面，展示ComfyUI AI图像生成功能，简洁专业的设计风格，上面印着几个字“生图自由”",
+      "seed": 0,
+      "guidance_scale": 3.5,
+      "num_images_per_prompt": 4,
+      "num_inference_steps": 25,
+      "width": 1024,
+      "height": 448,
+      "speak_and_recognation": {
+        "__value__": [
+          false,
+          true
+        ]
+      }
+    },
+    "class_type": "BizyAir_CogView4_6B_Pipe",
+    "_meta": {
+      "title": "☁️BizyAir CogView4_6B_Pipe"
+    }
+  },
+  "3": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  }
+}
