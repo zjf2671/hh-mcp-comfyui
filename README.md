@@ -131,14 +131,6 @@ npx @modelcontextprotocol/inspector
 
 修改`server.py`中的`generate_image`工具定义来添加新参数
 
-## 贡献
-
-1. Fork项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开Pull Request
-
 ## 项目结构
 
 ```
@@ -152,6 +144,7 @@ npx @modelcontextprotocol/inspector
 │   └── workflows/
 │       ├── i2image_bizyair_sdxl.json
 │       ├── t2image_bizyair_flux.json
+│       ├── i2image_cogview4.json
 │       └── t2image_sd1.5.json
 ├── src/                  # 源代码目录
 │   └── hh/
@@ -160,12 +153,22 @@ npx @modelcontextprotocol/inspector
 │       └── workflows/           # 工作流文件目录
 ```
 
-## 注意事项
+## 使用注意事项（针对没有用过comfyui的特别注意）
 
 - 默认工作流为`t2image_bizyair_flux`
 - 图片尺寸默认为1024x1024
 - 服务启动时会自动加载workflows目录下的所有JSON工作流文件
-- 如果使用你本地的comfyui工作流的话，需要导出(API)的JSON格式，并放入workflows目录中
+- 如果你使用的是本项目中的**样例工作流**需要在comfyui中下载个插件，详细操作请查看：[样例工作流插件安装教程](https://ziitefe2yxn.feishu.cn/wiki/PlSmwBbBWiA0iDkc07scb4EEnHc)
+- 如果使用你本地的comfyui工作流的话，先要保证你的工作流能在comfyui正常运行，然后需要导出(API)的JSON格式，并放入workflows目录中
+
+
+## 贡献
+
+1. Fork项目
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 打开Pull Request
 
 ---
 ## 如有问题可以到公众号中联系我：
