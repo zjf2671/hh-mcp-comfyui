@@ -1,8 +1,9 @@
 [project]
 name = "hh-mcp-comfyui"
-version = "0.1.0"
-description = "Add your description here"
+version = "2025.04.20.0"
+description = "基于Model Context Protocol (MCP)的ComfyUI图像生成服务，通过API调用本地ComfyUI实例生成图片,实现自然语言生图自由"
 readme = "README.md"
+license = {file = "LICENSE"}
 requires-python = ">=3.13"
 dependencies = [
     "httpx>=0.28.1",
@@ -10,10 +11,24 @@ dependencies = [
     "websockets>=15.0.1",
     "websocket-client>=1.8.0",
 ]
-
-[[project.authors]]
-name = "harryzhang"
-email = "zjf2671@126.com"
+authors = [
+  {name = "harryzhang", email = "zjf2671@126.com"}
+]
+maintainers = [
+  {name = "harryzhang", email = "zjf2671@126.com"}
+]
 
 [project.urls]
-"Homepage" = "https://github.com/zjf2671/hh-mcp-comfyui"
+Homepage = "https://github.com/zjf2671/hh-mcp-comfyui"
+Repository = "https://github.com/zjf2671/hh-mcp-comfyui"
+Issues = "https://github.com/zjf2671/hh-mcp-comfyui/issues"
+
+[build-system]
+requires = [ "hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+hh-mcp-comfyui = "hh:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hh"]

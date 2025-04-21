@@ -14,16 +14,8 @@ except ImportError:
     # Allow running directly for testing
     import comfyui_client
 
-
-
-logging.basicConfig(
-    level=logging.INFO,
-    handlers=[
-        logging.FileHandler('server.log', mode='a'),
-        logging.StreamHandler()
-    ],
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+# Enhanced logging configuration
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize FastMCP server with longer timeout (300 seconds)
@@ -164,9 +156,8 @@ def generate_image_prompt(
 
 
 # --- Server Execution ---
-
-if __name__ == "__main__":
-       # Ensure the workflows directory exists relative to this script
+def main():
+        # Ensure the workflows directory exists relative to this script
     # This helps if running the script directly for testing
     script_dir = Path(__file__).parent
     workflows_path = script_dir / "workflows"
@@ -185,4 +176,6 @@ if __name__ == "__main__":
     # Run using stdio transport by default
     # Use `mcp run comfyui_mcp_server/server.py` or `python comfyui_mcp_server/server.py`
     mcp.run(transport='stdio')
-   
+
+if __name__ == "__main__":
+    main()

@@ -74,7 +74,7 @@ $ cp .\example\workflows\* .\src\hh\workflows\
 ## 测试运行服务
 
 ```bash
-$ uv --directory 你本地目录安装/hh-mcp-comfyui/src/hh run server.py
+$ uv --directory 你本地安装目录/hh-mcp-comfyui run hh-mcp-comfyui
 
 INFO:__main__:Scanning for workflows in: D:\cygitproject\hh-mcp-comfyui\src\hh\workflows
 INFO:__main__:Registered resource: workflow://i2image_bizyair_sdxl -> i2image_bizyair_sdxl.json
@@ -99,9 +99,9 @@ INFO:__main__:Starting ComfyUI MCP Server...
       "command": "uv",
       "args": [
         "--directory",
-        "项目绝对路径（例如：D:/hh-mcp-comfyui/src/hh）",
+        "项目绝对路径（例如：D:/hh-mcp-comfyui）",
         "run",
-        "server.py"
+        "hh-mcp-comfyui"
       ]
     }
   }
@@ -117,7 +117,7 @@ npx @modelcontextprotocol/inspector
 把这个配置复制进MCP Inspector的配置中，然后点击连接：
 - Transport Type：STDIO
 - Command：uv 
-- Arguments：--directory 你本地目录安装/hh-mcp-comfyui/src/hh run server.py
+- Arguments：--directory 你本地安装目录/hh-mcp-comfyui run hh-mcp-comfyui
 ![alt text](images/image-1.png)
 
 ## 扩展
