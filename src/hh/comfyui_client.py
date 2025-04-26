@@ -184,11 +184,15 @@ def modify_workflow(workflow: Dict[str, Any], prompt: str, width: int, height: i
 
 async def queue_prompt_async(prompt_workflow: Dict[str, Any], client_id: str) -> str:
     """Submits a workflow to the ComfyUI queue via HTTP POST."""
+    # Disable proxy for localhost requests
+    import os
+    os.environ['NO_PROXY'] = '127.0.0.1'
+    
     payload = {"prompt": prompt_workflow, "client_id": client_id}
     headers = {'Content-Type': 'application/json'}
     url = f"{COMFYUI_API_BASE}/prompt"
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=60.0) as client:
         try:
             response = await client.post(url, json=payload, headers=headers)
             response.raise_for_status() # Raise exception for bad status codes
