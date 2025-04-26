@@ -7,11 +7,14 @@ import httpx
 import time
 # import websockets
 import websocket
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse # Add urlparse
 from pathlib import Path
 import logging
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional, Tuple, Union # Add Union
 from datetime import datetime
+import aiohttp # Add aiohttp
+import aiofiles # Add aiofiles
+from pydantic import HttpUrl
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -57,6 +60,50 @@ def find_node_by_class_type(workflow: Dict[str, Any], class_types: list[str]) ->
         if node_data.get("class_type") in class_types:
             return node_id
     return None
+
+def find_load_image_node(workflow: Dict[str, Any]) -> Optional[str]:
+    """Finds the node ID for loading the input image."""
+    LOAD_IMAGE_TYPES = [
+        "LoadImage", # Standard
+        "LoadImageMask", # If mask is also needed, but we focus on basic LoadImage
+        "ImageLoad", # Alternative naming
+        "LoadImageBase64" # If using base64 input
+    ]
+    node_id = find_node_by_class_type(workflow, LOAD_IMAGE_TYPES)
+    if node_id:
+        logger.debug(f"Found load image node: {node_id}")
+    else:
+        logger.warning("Could not find a suitable load image node in workflow")
+    return node_id
+
+def find_scheduler_node(workflow: Dict[str, Any]) -> Optional[str]:
+    """Finds the node ID for the scheduler node controlling denoise."""
+    # Common scheduler/sampler nodes that might have 'denoise'
+    SCHEDULER_SAMPLER_TYPES = [
+        "KSampler",
+        "KSamplerAdvanced",
+        "SamplerCustom",
+        "BasicScheduler", # Custom node example
+        "BizyAir_BasicScheduler", # From the provided workflow
+        "DPMScheduler",
+        # Add other relevant sampler/scheduler types if needed
+    ]
+    # Check nodes for 'denoise' input specifically if type matching isn't enough
+    for node_id, node_data in workflow.items():
+        if node_data.get("class_type") in SCHEDULER_SAMPLER_TYPES:
+            if "inputs" in node_data and "denoise" in node_data["inputs"]:
+                 logger.debug(f"Found scheduler/sampler node with denoise: {node_id} (class: {node_data.get('class_type')})")
+                 return node_id
+    # Fallback to just finding by type if no 'denoise' input found directly
+    node_id = find_node_by_class_type(workflow, SCHEDULER_SAMPLER_TYPES)
+    if node_id:
+         logger.debug(f"Found potential scheduler/sampler node by type: {node_id} (class: {workflow[node_id].get('class_type')}) - check for 'denoise' input manually if needed.")
+         return node_id # Return even if 'denoise' isn't confirmed in inputs, modification logic will handle it
+
+    logger.warning("Could not find a suitable scheduler/sampler node in workflow")
+    return None
+
+
 def find_latent_by_class_type(workflow: Dict[str, Any]) -> Optional[str]:
     """Finds the first node ID matching any of the given class_types."""
     LATENT_IMAGE_TYPES = [
@@ -180,7 +227,157 @@ def modify_workflow(workflow: Dict[str, Any], prompt: str, width: int, height: i
 
     return modified_workflow
 
+async def modify_i2i_workflow(
+    workflow: Dict[str, Any],
+    prompt: str,
+    image_path_or_url: Union[HttpUrl, str, bytes],
+    denoise: float = 0.85, # Default denoise value
+    seed: Optional[int] = None,
+    client_id: Optional[str] = None # Needed for upload
+) -> Dict[str, Any]:
+    """
+    Modifies an Image-to-Image workflow with the given parameters.
+    Handles URL, local path, or image data as bytes.
+    Uploads the input image if necessary.
+    """
+    modified_workflow = workflow.copy()  # Avoid modifying the original dict
+    if client_id is None:
+        client_id = str(uuid.uuid4())  # Generate if not provided
+
+    # 1. Upload the input image and get its ComfyUI filename
+    try:
+        uploaded_filename = await upload_image_async(image_path_or_url, client_id)
+    except Exception as e:
+        logger.error(f"Failed to upload input image: {e}")
+        raise # Re-raise the exception to be handled by the caller
+
+    # 2. Modify LoadImage node
+    load_image_node_id = find_load_image_node(modified_workflow)
+    if load_image_node_id and "inputs" in modified_workflow[load_image_node_id]:
+        modified_workflow[load_image_node_id]["inputs"]["image"] = uploaded_filename
+        logger.info(f"Set input image to '{uploaded_filename}' in node {load_image_node_id}")
+    else:
+        logger.error("Could not find LoadImage node to set input image.")
+        raise ValueError("Workflow does not contain a suitable LoadImage node.")
+
+    # 3. Modify positive prompt
+    positive_prompt_node_id = find_positive_prompt_node(modified_workflow)
+    if positive_prompt_node_id and "inputs" in modified_workflow[positive_prompt_node_id]:
+        modified_workflow[positive_prompt_node_id]["inputs"]["text"] = prompt
+        logger.info(f"Set positive prompt in node {positive_prompt_node_id}")
+    else:
+        logger.warning("Could not find suitable CLIPTextEncode node for positive prompt.")
+        # Depending on the workflow, this might be optional or critical
+
+    # 4. Modify denoise value in the scheduler/sampler node
+    scheduler_node_id = find_scheduler_node(modified_workflow)
+    if scheduler_node_id and "inputs" in modified_workflow[scheduler_node_id]:
+        if "denoise" in modified_workflow[scheduler_node_id]["inputs"]:
+            modified_workflow[scheduler_node_id]["inputs"]["denoise"] = denoise
+            logger.info(f"Set denoise to {denoise} in node {scheduler_node_id}")
+        else:
+             logger.warning(f"Node {scheduler_node_id} (type: {modified_workflow[scheduler_node_id].get('class_type')}) found, but does not have a 'denoise' input.")
+             # Consider raising error if denoise is critical and not found
+    else:
+        logger.warning("Could not find suitable scheduler/sampler node to set denoise value.")
+        # Consider raising error if denoise is critical
+
+    # 5. Modify random seed
+    random_seed_node_id = find_random_seed_node(modified_workflow)
+    if random_seed_node_id and "inputs" in modified_workflow[random_seed_node_id]:
+        node_class = modified_workflow[random_seed_node_id].get("class_type", "")
+        seed_value = seed if seed is not None else random.randint(1, 999999999)
+
+        # Use appropriate field name ('seed' or 'noise_seed')
+        seed_field = "seed"
+        if "noise_seed" in modified_workflow[random_seed_node_id]["inputs"]:
+             seed_field = "noise_seed"
+        elif "seed" not in modified_workflow[random_seed_node_id]["inputs"]:
+             logger.warning(f"Node {random_seed_node_id} has neither 'seed' nor 'noise_seed' input.")
+             seed_field = None # Indicate field not found
+
+        if seed_field:
+            modified_workflow[random_seed_node_id]["inputs"][seed_field] = seed_value
+            logger.info(f"Set {seed_field} to {seed_value} in node {random_seed_node_id}")
+
+    # 6. Modify save image filename_prefix (optional but good practice)
+    save_image_node_id = find_save_image_node(modified_workflow)
+    if save_image_node_id and "inputs" in modified_workflow[save_image_node_id]:
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        modified_workflow[save_image_node_id]["inputs"]["filename_prefix"] = f"{current_date}/ComfyUI_i2i" # Add i2i suffix
+        logger.info(f"Set filename_prefix in node {save_image_node_id}")
+
+    return modified_workflow
+
+
 # --- ComfyUI API Interaction ---
+
+async def upload_image_async(image_path_or_url: Union[str, bytes], client_id: str) -> str:
+    """
+    Uploads an image to ComfyUI's /upload/image endpoint.
+    Handles URL, local file paths, and image data as bytes.
+    Returns the filename as recognized by ComfyUI.
+    """
+    upload_url = f"{COMFYUI_API_BASE}/upload/image"
+    image_filename = "uploaded_image.png"  # Default filename for byte data
+
+    async with aiohttp.ClientSession() as session:
+        try:
+            if isinstance(image_path_or_url, bytes):
+                # Handle image data as bytes
+                image_data = image_path_or_url
+                logger.info(f"Uploading image data from bytes ({len(image_data)} bytes)")
+            elif isinstance(image_path_or_url, str):
+                if urlparse(image_path_or_url).scheme in ['http', 'https']:
+                    # Handle URL
+                    logger.info(f"Downloading image from URL: {image_path_or_url}")
+                    async with session.get(image_path_or_url) as resp:
+                        resp.raise_for_status()
+                        image_data = await resp.read()
+                        logger.info(f"Downloaded {len(image_data)} bytes from URL.")
+                    image_filename = os.path.basename(image_path_or_url)  # Get filename from URL
+                elif os.path.exists(image_path_or_url):
+                    # Handle local file path
+                    logger.info(f"Reading image from local path: {image_path_or_url}")
+                    async with aiofiles.open(image_path_or_url, 'rb') as f:
+                        image_data = await f.read()
+                    logger.info(f"Read {len(image_data)} bytes from local file.")
+                    image_filename = os.path.basename(image_path_or_url)  # Get filename from path
+                else:
+                    raise FileNotFoundError(f"Input image path or URL not found or invalid: {image_path_or_url}")
+            else:
+                raise ValueError(f"Unsupported image_path_or_url type: {type(image_path_or_url)}")
+
+            # Prepare multipart form data
+            form_data = aiohttp.FormData()
+            form_data.add_field('image', image_data, filename=image_filename)
+            # Add other potential fields like 'overwrite' if needed
+            form_data.add_field('overwrite', 'true')  # Overwrite if exists
+
+            logger.info(f"Uploading image '{image_filename}' to {upload_url}")
+            async with session.post(upload_url, data=form_data) as response:
+                response.raise_for_status()
+                result = await response.json()
+                logger.info(f"Upload response: {result}")
+
+                if "name" not in result:
+                    raise ValueError("Invalid response from /upload/image endpoint: 'name' missing")
+
+                # ComfyUI might rename the file, use the name from the response
+                uploaded_filename = result["name"]
+                # subfolder = result.get("subfolder", "")  # Get subfolder if present
+                logger.info(f"Image uploaded successfully as: {uploaded_filename}")
+                return uploaded_filename  # Return the name ComfyUI uses
+
+        except aiohttp.ClientError as e:
+            logger.error(f"Network error during image upload/download: {e}")
+            raise ConnectionError(f"Could not connect or download/upload image: {e}") from e
+        except FileNotFoundError as e:
+            logger.error(f"File error: {e}")
+            raise
+        except Exception as e:
+            logger.error(f"An unexpected error occurred during image upload: {e}")
+            raise RuntimeError("Failed to upload image to ComfyUI") from e
 
 async def queue_prompt_async(prompt_workflow: Dict[str, Any], client_id: str) -> str:
     """Submits a workflow to the ComfyUI queue via HTTP POST."""
@@ -346,9 +543,13 @@ async def generate_image_async(workflow: Dict[str, Any]) -> str:
         if output_info:
             filename, subfolder = output_info
             # Construct the view URL
-            query_params = {"filename": filename}
             if subfolder:
-                query_params["subfolder"] = subfolder
+                query_params = {"subfolder": subfolder}
+                query_params["filename"] = filename
+                # query_params = {"subfolder": subfolder}
+            else:
+                query_params = {"filename": filename}
+            
             # Ensure type=output is included if needed, though often default
             # query_params["type"] = "output"
             view_url = f"{COMFYUI_API_BASE}/view?{urlencode(query_params)}"
@@ -366,11 +567,17 @@ async def generate_image_async(workflow: Dict[str, Any]) -> str:
         raise RuntimeError("An unexpected error occurred during image generation.") from e
 
 # Example Usage (for testing this module directly)
-async def main():
+async def test_modify_t2i_workflow():
     try:
         # Load and modify a workflow
         wf = load_workflow("t2image_bizyair_flux.json") # Or another workflow
-        modified_wf = modify_workflow(wf, prompt="photo of a cute cat astronaut on the moon", width=1024, height=1024, seed=4266)
+        modified_wf = modify_workflow(
+            wf, 
+            prompt="photo of a cute cat astronaut on the moon", 
+            width=1024, 
+            height=1024, 
+            seed=4266
+        )
 
         # Generate the image
         image_url = await generate_image_async(modified_wf)
@@ -378,6 +585,55 @@ async def main():
 
     except Exception as e:
         print(f"Error in main: {e}")
+
+async def test_modify_i2i_workflow():
+    try:
+        # 1. 加载一个I2I工作流
+        workflow = load_workflow("I2Image_bizyair_flux.json")  # 确保此文件存在
+
+        # 2. 定义测试参数
+        prompt = "A futuristic cityscape with flying cars"
+        image_path_or_url = "images/ComfyUI_00020_.png"  # 替换为实际的图片路径或URL
+        denoise = 0.75
+        seed = 12345
+
+        # 3. 调用 modify_i2i_workflow
+        modified_wf = await modify_i2i_workflow(
+            workflow,
+            prompt=prompt,
+            image_path_or_url=image_path_or_url,
+            denoise=denoise,
+            seed=seed
+        )
+
+        # 4. 验证工作流是否被正确修改
+        # 检查prompt是否正确设置
+        positive_prompt_node_id = find_positive_prompt_node(modified_wf)
+        assert modified_wf[positive_prompt_node_id]["inputs"]["text"] == prompt
+
+        # 检查denoise是否正确设置
+        scheduler_node_id = find_scheduler_node(modified_wf)
+        if scheduler_node_id and "inputs" in modified_wf[scheduler_node_id] and "denoise" in modified_wf[scheduler_node_id]["inputs"]:
+            assert modified_wf[scheduler_node_id]["inputs"]["denoise"] == denoise
+
+        # 检查seed是否正确设置
+        random_seed_node_id = find_random_seed_node(modified_wf)
+        if random_seed_node_id and "inputs" in modified_wf[random_seed_node_id]:
+            node_class = modified_wf[random_seed_node_id].get("class_type", "")
+            if "seed" in modified_wf[random_seed_node_id]["inputs"]:
+                assert modified_wf[random_seed_node_id]["inputs"]["seed"] == seed
+            elif "noise_seed" in modified_wf[random_seed_node_id]["inputs"]:
+                assert modified_wf[random_seed_node_id]["inputs"]["noise_seed"] == seed
+
+        print("modify_i2i_workflow 测试成功!")
+
+         # Generate the image
+        image_url = await generate_image_async(modified_wf)
+        print(f"Generated Image URL: {image_url}")
+
+    except Exception as e:
+        print(f"modify_i2i_workflow 测试失败: {e}")
+        raise
 
 if __name__ == "__main__":
     # Ensure workflows directory exists for standalone testing
@@ -387,4 +643,7 @@ if __name__ == "__main__":
         # You might need to manually copy workflow files here for standalone test
 
     import asyncio
-    asyncio.run(main())
+    # 测试文生图
+    # asyncio.run(test_modify_t2i_workflow()) 
+    # 测试图生图
+    asyncio.run(test_modify_i2i_workflow())
