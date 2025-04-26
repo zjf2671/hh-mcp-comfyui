@@ -1,0 +1,194 @@
+{
+  "36": {
+    "inputs": {
+      "clip_name1": "t5xxl_fp16.safetensors",
+      "clip_name2": "clip_l.safetensors",
+      "type": "flux"
+    },
+    "class_type": "BizyAir_DualCLIPLoader",
+    "_meta": {
+      "title": "☁️BizyAir DualCLIPLoader"
+    }
+  },
+  "37": {
+    "inputs": {
+      "text": "black forest gateau cake spelling out the words \"BizyAir\", tasty, food photography, dynamic shot",
+      "speak_and_recognation": {
+        "__value__": [
+          false,
+          true
+        ]
+      },
+      "clip": [
+        "36",
+        0
+      ]
+    },
+    "class_type": "BizyAir_CLIPTextEncode",
+    "_meta": {
+      "title": "☁️BizyAir CLIP Text Encode (Prompt)"
+    }
+  },
+  "47": {
+    "inputs": {
+      "model": [
+        "48",
+        0
+      ],
+      "conditioning": [
+        "37",
+        0
+      ]
+    },
+    "class_type": "BizyAir_BasicGuider",
+    "_meta": {
+      "title": "☁️BizyAir BasicGuider"
+    }
+  },
+  "48": {
+    "inputs": {
+      "unet_name": "flux/flux1-dev.sft",
+      "weight_dtype": "default"
+    },
+    "class_type": "BizyAir_UNETLoader",
+    "_meta": {
+      "title": "☁️BizyAir Load Diffusion Model"
+    }
+  },
+  "50": {
+    "inputs": {
+      "noise": [
+        "59",
+        0
+      ],
+      "guider": [
+        "47",
+        0
+      ],
+      "sampler": [
+        "60",
+        0
+      ],
+      "sigmas": [
+        "58",
+        0
+      ],
+      "latent_image": [
+        "66",
+        0
+      ]
+    },
+    "class_type": "BizyAir_SamplerCustomAdvanced",
+    "_meta": {
+      "title": "☁️BizyAir SamplerCustomAdvanced"
+    }
+  },
+  "54": {
+    "inputs": {
+      "samples": [
+        "50",
+        0
+      ],
+      "vae": [
+        "55",
+        0
+      ]
+    },
+    "class_type": "BizyAir_VAEDecode",
+    "_meta": {
+      "title": "☁️BizyAir VAE Decode"
+    }
+  },
+  "55": {
+    "inputs": {
+      "vae_name": "flux/ae.sft"
+    },
+    "class_type": "BizyAir_VAELoader",
+    "_meta": {
+      "title": "☁️BizyAir Load VAE"
+    }
+  },
+  "56": {
+    "inputs": {
+      "images": [
+        "54",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "预览图像"
+    }
+  },
+  "58": {
+    "inputs": {
+      "scheduler": "normal",
+      "steps": 20,
+      "denoise": 0.85,
+      "model": [
+        "48",
+        0
+      ]
+    },
+    "class_type": "BizyAir_BasicScheduler",
+    "_meta": {
+      "title": "☁️BizyAir BasicScheduler"
+    }
+  },
+  "59": {
+    "inputs": {
+      "noise_seed": 438153234912084
+    },
+    "class_type": "BizyAir_RandomNoise",
+    "_meta": {
+      "title": "☁️BizyAir RandomNoise"
+    }
+  },
+  "60": {
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "class_type": "BizyAir_KSamplerSelect",
+    "_meta": {
+      "title": "☁️BizyAir KSamplerSelect"
+    }
+  },
+  "65": {
+    "inputs": {
+      "image": "example.png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载图像"
+    }
+  },
+  "66": {
+    "inputs": {
+      "pixels": [
+        "65",
+        0
+      ],
+      "vae": [
+        "55",
+        0
+      ]
+    },
+    "class_type": "BizyAir_VAEEncode",
+    "_meta": {
+      "title": "☁️BizyAir VAE Encode"
+    }
+  },
+  "67": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "54",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  }
+}

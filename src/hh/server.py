@@ -2,7 +2,10 @@ import os
 import json
 import logging
 from pathlib import Path
-from typing import Optional, Dict, Any
+import base64
+from typing import Optional, Dict, Any, Union
+
+from pydantic import HttpUrl, Field
 
 from mcp.server.fastmcp import FastMCP
 from mcp.server.fastmcp.prompts import base as prompt_base
@@ -69,12 +72,12 @@ else:
 # --- Tool Definition ---
 
 @mcp.tool()
-async def generate_image(
+async def generate_image_from_text(
     prompt: str = "a beautiful landscape",  # 添加默认prompt值
     width: int = 1024,
     height: int = 1024,
     workflow_name: str = "t2image_bizyair_flux",
-    seed: int = 5201314,  # Default seed value
+    seed: Optional[int] = None,  # Default seed value
 ) -> str:
     """
     Generates an image using ComfyUI based on the provided prompt and optional parameters.
@@ -88,7 +91,7 @@ async def generate_image(
     Returns:
         A URL to view the generated image.
     """
-    logger.info(f"generate_image called with prompt='{prompt}', width={width}, height={height}, workflow='{workflow_name}'")
+    logger.info(f"generate_image_from_text called with prompt='{prompt}', width={width}, height={height}, workflow='{workflow_name}'")
     try:
         # 1. Load the specified or default workflow
         workflow_data = comfyui_client.load_workflow(workflow_name)
@@ -112,6 +115,81 @@ async def generate_image(
         return f"Error generating image: {e}"
     except Exception as e:
         logger.exception("Unexpected error during image generation tool execution.")
+        return f"Error: An unexpected error occurred: {e}"
+
+@mcp.tool()
+async def generate_image_from_image(
+    prompt: str = "modify the image based on prompt",
+    image_path_or_url: Union[HttpUrl, str, bytes] = Field(..., description="URL, local path, or image data as bytes."),
+    denoise: float = Field(default=0.85, ge=0.0, le=1.0, description="Denoising strength (0.0 to 1.0). Higher values mean more changes from the original image."),
+    workflow_name: str = "i2image_bizyair_flux", # Default to the I2I workflow
+    seed: Optional[int] = None, # Allow optional seed override
+) -> str:
+    """
+    Generates an image using ComfyUI based on an input image (URL, local path, or bytes), prompt, and optional parameters.
+
+    Args:
+        prompt: The positive text prompt (It must be in English).
+        image_path_or_url: The URL or local file path or image data as bytes of the input image.
+        denoise: Denoising strength (0.0 to 1.0). Controls how much the original image influences the result.
+        workflow_name: The name of the I2I workflow file (without .json) to use (default: 'I2Image_bizyair_flux').
+        seed: Optional random seed for reproducibility.
+    Returns:
+        A URL to view the generated image or an error message.
+    """
+    # Ensure seed is an integer if provided, generate random if None
+    final_seed = seed if seed is not None else comfyui_client.random.randint(1, 999999999)
+    # Convert HttpUrl to string if necessary
+    image_input = str(image_path_or_url) if isinstance(image_path_or_url, HttpUrl) else image_path_or_url
+
+    # Check if image_path_or_url is base64 encoded
+    if isinstance(image_path_or_url, str) and image_path_or_url.startswith("data:image"):
+        try:
+            # Extract base64 data
+            header, encoded = image_path_or_url.split(",", 1)
+            image_input = base64.b64decode(encoded)
+            logger.info("Image data is base64 encoded, decoded successfully.")
+        except Exception as e:
+            logger.error(f"Error decoding base64 image data: {e}")
+            return f"Error: Could not decode base64 image data: {e}"
+    else:
+        image_input = str(image_path_or_url) if isinstance(image_path_or_url, HttpUrl) else image_path_or_url
+
+    logger.info(f"generate_image_from_image called with prompt='{prompt}', image='{image_input}', denoise={denoise}, workflow='{workflow_name}', seed={final_seed}")
+
+    try:
+        # 1. Load the specified I2I workflow
+        workflow_data = comfyui_client.load_workflow(workflow_name)
+        logger.info(f"Loaded I2I workflow: {workflow_name}")
+
+        # 2. Modify the workflow with user inputs (including uploading the image)
+        # Need a client_id for potential upload within modify_i2i_workflow
+        client_id = str(comfyui_client.uuid.uuid4())
+        modified_workflow = await comfyui_client.modify_i2i_workflow(
+            workflow_data,
+            prompt,
+            image_input,
+            denoise,
+            final_seed,
+            client_id=client_id # Pass client_id
+        )
+        logger.info("Modified I2I workflow successfully.")
+        # logger.debug(f"Modified I2I workflow details: {json.dumps(modified_workflow, indent=2)}") # Optional: log the full workflow
+
+        # 3. Generate the image using the modified workflow
+        # generate_image_async handles queuing, waiting, and result extraction
+        image_url = await comfyui_client.generate_image_async(modified_workflow) # generate_image_async already uses its own client_id internally for queueing
+
+        logger.info(f"Image generation from image successful, returning URL: {image_url}")
+        return image_url
+    except FileNotFoundError as e:
+        logger.error(f"Workflow file error: {e}")
+        return f"Error: Workflow '{workflow_name}' not found."
+    except (ConnectionError, ValueError, RuntimeError) as e:
+        logger.error(f"Image generation from image failed: {e}")
+        return f"Error generating image from image: {e}"
+    except Exception as e:
+        logger.exception("Unexpected error during image generation from image tool execution.")
         return f"Error: An unexpected error occurred: {e}"
 
 

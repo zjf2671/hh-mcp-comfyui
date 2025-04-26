@@ -1,0 +1,48 @@
+{
+  "36": {
+    "inputs": {
+      "image": [
+        "43",
+        0
+      ]
+    },
+    "class_type": "BizyAirRemoveBackground",
+    "_meta": {
+      "title": "☁️BizyAir Remove Image Background"
+    }
+  },
+  "40": {
+    "inputs": {
+      "images": [
+        "36",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "预览图像"
+    }
+  },
+  "43": {
+    "inputs": {
+      "image": "00003-496731004.png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载图像"
+    }
+  },
+  "44": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "36",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  }
+}
