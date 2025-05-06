@@ -14,10 +14,10 @@ dependencies = [
     "aiofiles>=23.2.1", # Add aiofiles with a recent version constraint
 ]
 authors = [
-  {name = "harryzhang", email = "zjf2671@126.com"}
+  {name = "harryzhang", email = "hh@harryzhang.site"}
 ]
 maintainers = [
-  {name = "harryzhang", email = "zjf2671@126.com"}
+  {name = "harryzhang", email = "hh@harryzhang.site"}
 ]
 
 [project.urls]
