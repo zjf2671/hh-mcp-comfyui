@@ -15,7 +15,7 @@ try:
     from . import comfyui_client
 except ImportError:
     # Allow running directly for testing
-    from hh import comfyui_client
+    from hh_mcp_comfyui import comfyui_client
 
 # Enhanced logging configuration
 logging.basicConfig(level=logging.INFO)
