@@ -76,6 +76,9 @@ $ mkdir src\hh_mcp_comfyui\workflows
 $ cp .\example\workflows\* .\src\hh_mcp_comfyui\workflows\
 
 ```
+（**注意**：如果是使用的uvx方式启动的话，请找你本地对应的安装目录把样例工作流添加进去，可以使用如下图方式找到你的安装目录的位置）
+
+![alt text](images/image-2.png)
 
 ## 测试运行服务
 - uv方式
@@ -156,9 +159,7 @@ $ npx @modelcontextprotocol/inspector uvx hh-mcp-comfyui
 
 ### 添加新工作流
 
-1. 将工作流JSON文件放入`src/hh_mcp_comfyui/workflows`目录中（注意：如果是使用的uvx方式启动的话，请找你本地对应的安装目录添加，可以使用如下图方式找到你的目录的位置）
-
-![alt text](images/image-2.png)
+1. 将工作流JSON文件放入`src/hh_mcp_comfyui/workflows`目录中
 
 2. 重启服务自动加载新工作流
 
