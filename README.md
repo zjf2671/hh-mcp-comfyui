@@ -11,8 +11,9 @@
 - 自动加载workflows目录下的工作流文件作为资源
 
 ## 新增功能记录
-- [2025-4-26] 增加图生图和移除背景样例工作流及支持图生图工具
-- [2025-4-20] 加入文生图生成工具
+- [2025-05-06] 把项目目录src/hh修改成src/hh_mcp_comfyui,增加uvx构建方式
+- [2025-04-26] 增加图生图和移除背景样例工作流及支持图生图工具
+- [2025-04-20] 加入文生图生成工具
  
 ## 效果
 
@@ -69,34 +70,38 @@ Audited 29 package in 0.02ms
 $ cd hh-mcp-comfyui
 
 # 创建工作流没有这个目录执行下面进行创建（这个目录位置不能动）
-$ mkdir src\hh\workflows
+$ mkdir src\hh_mcp_comfyui\workflows
 
 #复制样例工作的工作流目录
-$ cp .\example\workflows\* .\src\hh\workflows\
+$ cp .\example\workflows\* .\src\hh_mcp_comfyui\workflows\
 
 ```
 
 ## 测试运行服务
+- uv方式
 
 ```bash
 $ uv --directory 你本地安装目录/hh-mcp-comfyui run hh-mcp-comfyui
 
-INFO:__main__:Scanning for workflows in: D:\cygitproject\hh-mcp-comfyui\src\hh\workflows
+INFO:__main__:Scanning for workflows in: D:\cygitproject\hh-mcp-comfyui\src\hh_mcp_comfyui\workflows
 INFO:__main__:Registered resource: workflow://i2image_bizyair_sdxl -> i2image_bizyair_sdxl.json
 INFO:__main__:Registered resource: workflow://t2image_bizyair_flux -> t2image_bizyair_flux.json
 INFO:__main__:Registered resource: workflow://t2image_sd1.5 -> t2image_sd1.5.json
 INFO:__main__:Starting ComfyUI MCP Server...
 ```
+- uvx方式
+```bash
+$ uvx hh-mcp-comfyui
+INFO:hh_mcp_comfyui.server:Scanning for workflows in: C:\Users\tianw\AppData\Local\uv\cache\archive-v0\dp4MTo0f1qL0DdYF_BYCL\Lib\site-packages\hh_mcp_comfyui\workflows
+INFO:hh_mcp_comfyui.server:Starting ComfyUI MCP Server...
+```
 **出现上面的信息表示服务启动成功**
 
 ## 使用方法
+>必须确保本地ComfyUI实例正在运行(默认地址: http://127.0.0.1:8188) [ComfyUI安装地址](https://github.com/comfyanonymous/ComfyUI.git)
+### a、uv MCP服务配置方法
 
-### 作为MCP服务使用
-
-1. 必须确保本地ComfyUI实例正在运行(默认地址: http://127.0.0.1:8188)
-[ComfyUI安装地址](https://github.com/comfyanonymous/ComfyUI.git)
-
-2. Cherry Studio、Cline、Cursor等客户端的使用方式
+- Cherry Studio、Cline、Cursor等客户端的使用方式
 ```bash
 {
   "mcpServers": {
@@ -111,25 +116,50 @@ INFO:__main__:Starting ComfyUI MCP Server...
     }
   }
 }
+
+
+```
+
+### b、uvx MCP服务配置方法
+
+- Cherry Studio、Cline、Cursor等客户端的使用方式
+```bash
+{
+  "mcpServers": {
+    "hh-mcp-comfyui": {
+      "command": "uvx",
+      "args": [
+        "hh-mcp-comfyui"
+      ]
+    }
+  }
+}
 ```
 
 ## 测试
 
-- 可以使用MCP Inspector测试服务端工具：
+> 可以使用MCP Inspector测试服务端工具：
+  
+- uv方式
 ```bash
-npx @modelcontextprotocol/inspector
+$ npx @modelcontextprotocol/inspector uv --directory 你本地安装目录/hh-mcp-comfyui run hh-mcp-comfyui
 ```
-把这个配置复制进MCP Inspector的配置中，然后点击连接：
-- Transport Type：STDIO
-- Command：uv 
-- Arguments：--directory 你本地安装目录/hh-mcp-comfyui run hh-mcp-comfyui
+- uvx方式
+ ```bash
+$ npx @modelcontextprotocol/inspector uvx hh-mcp-comfyui
+``` 
+
+然后点击连接如图即可调试：
 ![alt text](images/image-1.png)
 
 ## 扩展
 
 ### 添加新工作流
 
-1. 将工作流JSON文件放入`src/hh/workflows`目录中
+1. 将工作流JSON文件放入`src/hh_mcp_comfyui/workflows`目录中（注意：如果是使用的uvx方式启动的话，请找你本地对应的安装目录添加，可以使用如下图方式找到你的目录的位置）
+
+![alt text](images/image-2.png)
+
 2. 重启服务自动加载新工作流
 
 ### 自定义参数
@@ -152,7 +182,7 @@ npx @modelcontextprotocol/inspector
 │       ├── i2image_cogview4.json
 │       └── t2image_sd1.5.json
 ├── src/                  # 源代码目录
-│   └── hh/
+│   └── hh_mcp_comfyui/
 │       ├── comfyui_client.py    # ComfyUI客户端实现
 │       ├── server.py            # MCP服务主文件
 │       └── workflows/           # 工作流文件目录
@@ -164,7 +194,7 @@ npx @modelcontextprotocol/inspector
 - 图片尺寸默认为1024x1024
 - 服务启动时会自动加载workflows目录下的所有JSON工作流文件
 - 如果你使用的是本项目中的**样例工作流**需要在comfyui中下载个插件，详细操作请查看：[样例工作流插件安装教程](https://ziitefe2yxn.feishu.cn/wiki/PlSmwBbBWiA0iDkc07scb4EEnHc)
-- 如果使用你本地的comfyui工作流的话，先要保证你的工作流能在comfyui正常运行，然后需要导出(API)的JSON格式，并放入workflows目录中
+- 如果使用你本地的comfyui工作流的话，先要保证你的工作流能在comfyui正常运行，然后需要导出(API)的JSON格式，并放入src/workflows目录中
 
 
 ## 贡献

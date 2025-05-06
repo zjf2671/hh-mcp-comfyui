@@ -1,6 +1,6 @@
 [project]
 name = "hh-mcp-comfyui"
-version = "2025.04.20.0"
+version = "2025.04.20.2"
 description = "基于Model Context Protocol (MCP)的ComfyUI图像生成服务，通过API调用本地ComfyUI实例生成图片,实现自然语言生图自由"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -30,7 +30,7 @@ requires = [ "hatchling"]
 build-backend = "hatchling.build"
 
 [project.scripts]
-hh-mcp-comfyui = "hh:main"
+hh-mcp-comfyui = "hh_mcp_comfyui:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/hh"]
+packages = ["src/hh_mcp_comfyui"]
