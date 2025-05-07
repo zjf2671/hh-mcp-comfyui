@@ -11,6 +11,7 @@
 - 自动加载workflows目录下的工作流文件作为资源
 
 ## 新增功能记录
+- [2025-05-07] 增加pip构建方式
 - [2025-05-06] 把项目目录src/hh修改成src/hh_mcp_comfyui,增加uvx构建方式
 - [2025-04-26] 增加图生图和移除背景样例工作流及支持图生图工具
 - [2025-04-20] 加入文生图生成工具
@@ -30,127 +31,161 @@
 
 **2. 使用uv管理Python环境：**
 - 安装uv:
-```bash
-# On macOS and Linux.
-$ curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```bash
+  # On macOS and Linux.
+  $ curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# On Windows.
-$ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+  # On Windows.
+  $ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-# 更新uv(非必要操作):
-$ uv self update
-
-```
+  # 更新uv(非必要操作):
+  $ uv self update
+  ```
 - 初始化项目环境：
-```bash
-# Clone the repository.
-$ git clone https://github.com/zjf2671/hh-mcp-comfyui.git
+  ```bash
+  # Clone the repository.
+  $ git clone https://github.com/zjf2671/hh-mcp-comfyui.git
 
-$ cd hh-mcp-comfyui
+  $ cd hh-mcp-comfyui
 
-# Initialized venv
-$ uv venv
+  # Initialized venv
+  $ uv venv
 
-# Activate the virtual environment.
-$ .venv\Scripts\activate
+  # Activate the virtual environment.
+  $ .venv\Scripts\activate
 
-# Install dependencies.
-$ uv lock
-Resolved 30 packages in 1ms
+  # Install dependencies.
+  $ uv lock
+  Resolved 30 packages in 1ms
 
-# sync dependencies.
-$ uv sync
-Resolved 30 packages in 2.54s
-Audited 29 package in 0.02ms
-
-```
-- 样例工作流copy到指定工作流目录：
-```bash
-# 进入项目目录
-$ cd hh-mcp-comfyui
-
-# 创建工作流没有这个目录执行下面进行创建（这个目录位置不能动）
-$ mkdir src\hh_mcp_comfyui\workflows
-
-#复制样例工作的工作流目录
-$ cp .\example\workflows\* .\src\hh_mcp_comfyui\workflows\
-
-```
-（**注意**：如果是使用的uvx方式启动的话，请找你本地对应的安装目录把样例工作流添加进去，可以使用如下图方式找到你的安装目录的位置）
-
-![alt text](images/image-2.png)
+  # sync dependencies.
+  $ uv sync
+  Resolved 30 packages in 2.54s
+  Audited 29 package in 0.02ms
+  ```
 
 ## 测试运行服务
-- uv方式
+- **uv方式**
 
-```bash
-$ uv --directory 你本地安装目录/hh-mcp-comfyui run hh-mcp-comfyui
+  ```bash
+  $ uv --directory 你本地安装目录/hh-mcp-comfyui run hh-mcp-comfyui
 
-INFO:__main__:Scanning for workflows in: D:\cygitproject\hh-mcp-comfyui\src\hh_mcp_comfyui\workflows
-INFO:__main__:Registered resource: workflow://i2image_bizyair_sdxl -> i2image_bizyair_sdxl.json
-INFO:__main__:Registered resource: workflow://t2image_bizyair_flux -> t2image_bizyair_flux.json
-INFO:__main__:Registered resource: workflow://t2image_sd1.5 -> t2image_sd1.5.json
-INFO:__main__:Starting ComfyUI MCP Server...
-```
-- uvx方式
-```bash
-$ uvx hh-mcp-comfyui
-INFO:hh_mcp_comfyui.server:Scanning for workflows in: C:\Users\tianw\AppData\Local\uv\cache\archive-v0\dp4MTo0f1qL0DdYF_BYCL\Lib\site-packages\hh_mcp_comfyui\workflows
-INFO:hh_mcp_comfyui.server:Starting ComfyUI MCP Server...
-```
+  INFO:__main__:Scanning for workflows in: D:\cygitproject\hh-mcp-comfyui\src\hh_mcp_comfyui\workflows
+  INFO:__main__:Registered resource: workflow://t2image_bizyair_flux -> t2image_bizyair_flux.json
+  INFO:__main__:Starting ComfyUI MCP Server...
+  ```
+- **uvx方式**
+  ```bash
+  $ uvx hh-mcp-comfyui
+  INFO:hh_mcp_comfyui.server:Scanning for workflows in: C:\Users\tianw\AppData\Local\uv\cache\archive-v0\dp4MTo0f1qL0DdYF_BYCL\Lib\site-packages\hh_mcp_comfyui\workflows
+  INFO:hh_mcp_comfyui.server:Starting ComfyUI MCP Server...
+  ```
+- **pip方式**
+  ```bash
+  $ pip install hh_mcp_comfyui
+  $ python -m hh_mcp_comfyui
+  INFO:hh_mcp_comfyui.server:Scanning for workflows in: F:\Python\Python313\Lib\site-packages\hh_mcp_comfyui\workflows
+  INFO:hh_mcp_comfyui.server:Starting ComfyUI MCP Server...
+  ```
 **出现上面的信息表示服务启动成功**
 
+## 样例工作流copy到指定工作流目录：
+- **uv**
+  ```bash
+  # 进入项目目录
+  $ cd hh-mcp-comfyui
+
+  # 创建工作流没有这个目录执行下面进行创建（这个目录位置不能动）
+  $ mkdir src\hh_mcp_comfyui\workflows
+
+  #复制样例工作的工作流目录
+  $ cp .\example\workflows\* .\src\hh_mcp_comfyui\workflows\
+
+  ```
+  （**特别注意**：如果是使用的下面的uvx或者pip方式启动的话，请找你本地对应的安装目录把样例工作流添加进去，然后重启你的MCP服务，可以使用如下图方式找到你的安装目录的位置）
+- **uvx**
+  ```bash
+  $ uvx hh-mcp-comfyui
+  ```
+  ![alt text](images/image-2.png)
+- **pip**
+  
+   ```bash
+  #首先安装依赖
+  $ pip install hh_mcp_comfyui
+  $ python -m hh_mcp_comfyui
+  ```
+
+  ![alt text](images/image-3.png)
+
 ## 使用方法
->必须确保本地ComfyUI实例正在运行(默认地址: http://127.0.0.1:8188) [ComfyUI安装地址](https://github.com/comfyanonymous/ComfyUI.git)
-### a、uv MCP服务配置方法
+> **必须确保本地ComfyUI实例正在运行(默认地址: http://127.0.0.1:8188) [ComfyUI安装地址](https://github.com/comfyanonymous/ComfyUI.git)**
 
-- Cherry Studio、Cline、Cursor等客户端的使用方式
-```bash
-{
-  "mcpServers": {
-    "hh-mcp-comfyui": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "项目绝对路径（例如：D:/hh-mcp-comfyui）",
-        "run",
-        "hh-mcp-comfyui"
-      ]
+### Cherry Studio、Cline、Cursor等客户端的使用方式
+
+- **uv MCP服务配置**
+  ```bash
+  {
+    "mcpServers": {
+      "hh-mcp-comfyui": {
+        "command": "uv",
+        "args": [
+          "--directory",
+          "项目绝对路径（例如：D:/hh-mcp-comfyui）",
+          "run",
+          "hh-mcp-comfyui"
+        ]
+      }
     }
   }
-}
-
-
-```
-
-### b、uvx MCP服务配置方法
-
-- Cherry Studio、Cline、Cursor等客户端的使用方式
-```bash
-{
-  "mcpServers": {
-    "hh-mcp-comfyui": {
-      "command": "uvx",
-      "args": [
-        "hh-mcp-comfyui"
-      ]
+  ```
+- **uvx MCP服务配置**
+  ```bash
+  {
+    "mcpServers": {
+      "hh-mcp-comfyui": {
+        "command": "uvx",
+        "args": [
+          "hh-mcp-comfyui"
+        ]
+      }
     }
   }
-}
-```
+  ```
+- **pip MCP服务配置**
+
+  需要先执行命令窗口先执行：pip install hh_mcp_comfyui
+  ```bash
+  {
+    "mcpServers": {
+      "hh-mcp-comfyui": {
+        "command": "python",
+        "args": [
+          "-m",
+          "hh_mcp_comfyui"
+        ]
+      }
+    }
+  }
+  ```
 
 ## 测试
 
-> 可以使用MCP Inspector测试服务端工具：
+> **使用MCP Inspector测试服务端工具**
   
-- uv方式
-```bash
-$ npx @modelcontextprotocol/inspector uv --directory 你本地安装目录/hh-mcp-comfyui run hh-mcp-comfyui
-```
-- uvx方式
- ```bash
-$ npx @modelcontextprotocol/inspector uvx hh-mcp-comfyui
-``` 
+- **uv方式**
+  ```bash
+  $ npx @modelcontextprotocol/inspector uv --directory 你本地安装目录/hh-mcp-comfyui run hh-mcp-comfyui
+  ```
+- **uvx方式**
+  ```bash
+  $ npx @modelcontextprotocol/inspector uvx hh-mcp-comfyui
+  ``` 
+- **pip方式**
+  ```bash
+  $ pip install hh_mcp_comfyui
+  $ npx @modelcontextprotocol/inspector python -m hh_mcp_comfyui
+  ``` 
 
 然后点击连接如图即可调试：
 ![alt text](images/image-1.png)
@@ -160,10 +195,12 @@ $ npx @modelcontextprotocol/inspector uvx hh-mcp-comfyui
 ### 添加新工作流
 
 1. 将工作流JSON文件放入`src/hh_mcp_comfyui/workflows`目录中
+  
+    如果是uvx和pip启动方式请看上面 **样例工作流copy到指定工作流目录** 的使用方式
 
 2. 重启服务自动加载新工作流
 
-### 自定义参数
+### 开发者自定义参数
 
 修改`server.py`中的`generate_image`工具定义来添加新参数
 
