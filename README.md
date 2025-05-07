@@ -77,13 +77,16 @@
 - **uvx方式**
   ```bash
   $ uvx hh-mcp-comfyui
+
   INFO:hh_mcp_comfyui.server:Scanning for workflows in: C:\Users\tianw\AppData\Local\uv\cache\archive-v0\dp4MTo0f1qL0DdYF_BYCL\Lib\site-packages\hh_mcp_comfyui\workflows
   INFO:hh_mcp_comfyui.server:Starting ComfyUI MCP Server...
   ```
 - **pip方式**
   ```bash
   $ pip install hh_mcp_comfyui
+  
   $ python -m hh_mcp_comfyui
+
   INFO:hh_mcp_comfyui.server:Scanning for workflows in: F:\Python\Python313\Lib\site-packages\hh_mcp_comfyui\workflows
   INFO:hh_mcp_comfyui.server:Starting ComfyUI MCP Server...
   ```
