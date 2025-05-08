@@ -1,7 +1,7 @@
 # ComfyUI MCP 服务
 
-[![English](https://img.shields.io/badge/English-Click-yellow)](docs/README.EN.md)
-[![简体中文](https://img.shields.io/badge/简体中文-点击查看-orange)](README.md)
+[![English](https://img.shields.io/badge/English-Click-yellow)](README.EN.md)
+[![简体中文](https://img.shields.io/badge/简体中文-点击查看-orange)](README.zh-CN.md)
 ![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
