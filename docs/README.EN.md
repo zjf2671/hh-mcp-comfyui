@@ -22,7 +22,7 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
 ## Results
 
 - **Effect in Cherry Studio**
-![alt text](.images/image.png)
+![alt text](../images/image.png)
 
 - **Effect in Cline**
 ![alt text](../images/cline_gen_image.png)
