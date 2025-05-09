@@ -131,7 +131,9 @@
 
 ### Cherry Studio、Cline、Cursor等客户端的使用方式
 
-- **uv MCP服务配置**
+<details>
+  <summary>uv MCP服务配置</summary>
+
   ```bash
   {
     "mcpServers": {
@@ -147,7 +149,11 @@
     }
   }
   ```
-- **uvx MCP服务配置**
+  </details>
+
+<details>
+  <summary>uvx MCP服务配置</summary>
+
   ```bash
   {
     "mcpServers": {
@@ -160,9 +166,13 @@
     }
   }
   ```
-- **pip MCP服务配置**
+  </details>
 
-  需要先执行命令窗口先执行：pip install hh_mcp_comfyui
+<details>
+  <summary>pip MCP服务配置</summary>
+
+  **需要先执行命令窗口先执行：pip install hh_mcp_comfyui**
+
   ```bash
   {
     "mcpServers": {
@@ -176,6 +186,27 @@
     }
   }
   ```
+</details>
+
+<details>
+  <summary>docker MCP服务配置</summary>
+  
+  ```bash
+  {
+    "mcpServers": {
+        "hh-mcp-comfyui": {
+            "command": "docker",
+            "args": [
+                "run",
+                "-i",
+                "--rm",
+                "zjf2671/hh-mcp-comfyui"
+            ]
+        }
+    }
+  }
+  ```
+</details>
 
 ## 测试
 

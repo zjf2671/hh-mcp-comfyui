@@ -131,7 +131,9 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
 
 ### Usage in Cherry Studio, Cline, Cursor and other clients
 
-- **uv MCP Service Configuration**
+<details>
+  <summary>uv MCP Service Configuration</summary>
+
   ```bash
   {
     "mcpServers": {
@@ -147,7 +149,11 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
     }
   }
   ```
-- **uvx MCP Service Configuration**
+</details>
+
+<details>
+  <summary>uvx MCP Service Configuration</summary>
+
   ```bash
   {
     "mcpServers": {
@@ -160,9 +166,13 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
     }
   }
   ```
-- **pip MCP Service Configuration**
+</details>
 
-  First execute in command window: pip install hh_mcp_comfyui
+<details>
+  <summary>pip MCP Service Configuration</summary>
+
+  **First execute in command window: pip install hh_mcp_comfyui**
+
   ```bash
   {
     "mcpServers": {
@@ -176,6 +186,27 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
     }
   }
   ```
+</details>
+
+<details>
+  <summary>docker MCP Service Configuration</summary>
+  
+  ```bash
+  {
+    "mcpServers": {
+        "hh-mcp-comfyui": {
+            "command": "docker",
+            "args": [
+                "run",
+                "-i",
+                "--rm",
+                "zjf2671/hh-mcp-comfyui"
+            ]
+        }
+    }
+  }
+  ```
+</details>
 
 ## Testing
 
