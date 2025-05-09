@@ -32,7 +32,7 @@ mcp = FastMCP(
 # --- Resource Loading ---
 
 # Dynamically load workflows as resources
-workflow_dir = Path(__file__).parent / "workflows"
+workflow_dir = Path(os.getenv("COMFYUI_WORKFLOWS_DIR", Path(__file__).parent / "workflows"))
 
 if not workflow_dir.is_dir():
     logger.warning(f"Workflows directory not found: {workflow_dir}. No workflow resources will be loaded.")

@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 COMFYUI_API_BASE = os.getenv("COMFYUI_API_BASE", "http://127.0.0.1:8188")
 WS_URL = f"ws://{COMFYUI_API_BASE.split('//')[1]}/ws"
-WORKFLOWS_DIR = Path(__file__).parent / "workflows"
+WORKFLOWS_DIR = Path(os.getenv("COMFYUI_WORKFLOWS_DIR", Path(__file__).parent / "workflows"))
 DEFAULT_WORKFLOW = "t2image_bizyair_flux.json" # Default workflow if none specified
 
 # --- Workflow Loading and Modification ---

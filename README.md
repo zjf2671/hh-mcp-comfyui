@@ -15,6 +15,7 @@
 - 自动加载workflows目录下的工作流文件作为资源
 
 ## 新增功能记录
+- [2025-05-11] 支持工作流文件目录动态配置
 - [2025-05-09] 增加docker构建方式,支持Python 3.12+
 - [2025-05-07] 增加pip构建方式
 - [2025-05-06] 把项目目录src/hh修改成src/hh_mcp_comfyui,增加uvx构建方式
@@ -104,10 +105,10 @@
   $ cd hh-mcp-comfyui
 
   # 创建工作流没有这个目录执行下面进行创建（这个目录位置不能动）
-  $ mkdir src\hh_mcp_comfyui\workflows
+  $ mkdir workflows
 
   #复制样例工作的工作流目录
-  $ cp .\example\workflows\* .\src\hh_mcp_comfyui\workflows\
+  $ cp .\example\workflows\* .\workflows\
 
   ```
   （**特别注意**：如果是使用的下面的uvx或者pip方式启动的话，请找你本地对应的安装目录把样例工作流添加进去，然后重启你的MCP服务，可以使用如下图方式找到你的安装目录的位置）
@@ -143,7 +144,11 @@
           "项目绝对路径（例如：D:/hh-mcp-comfyui）",
           "run",
           "hh-mcp-comfyui"
-        ]
+        ],
+        "env": {
+          "COMFYUI_API_BASE": "http://127.0.0.1:8188",
+          "COMFYUI_WORKFLOWS_DIR": "/path/hh-mcp-comfyui/workflows"
+        }
       }
     }
   }
@@ -160,7 +165,11 @@
         "command": "uvx",
         "args": [
           "hh-mcp-comfyui"
-        ]
+        ],
+        "env": {
+          "COMFYUI_API_BASE": "http://127.0.0.1:8188",
+          "COMFYUI_WORKFLOWS_DIR": "/path/hh-mcp-comfyui/workflows"
+        }
       }
     }
   }
@@ -180,7 +189,11 @@
         "args": [
           "-m",
           "hh_mcp_comfyui"
-        ]
+        ],
+        "env": {
+          "COMFYUI_API_BASE": "http://127.0.0.1:8188",
+          "COMFYUI_WORKFLOWS_DIR": "/path/hh-mcp-comfyui/workflows"
+        }
       }
     }
   }
@@ -189,19 +202,27 @@
 
 <details>
   <summary>docker MCP服务配置</summary>
-  
+
+  **前提是已安装docker*
+
   ```bash
   {
     "mcpServers": {
-        "hh-mcp-comfyui": {
-            "command": "docker",
-            "args": [
-                "run",
-                "-i",
-                "--rm",
-                "zjf2671/hh-mcp-comfyui"
-            ]
+      "hh-mcp-comfyui": {
+        "command": "docker",
+        "args": [
+            "run",
+            "--net=host",
+            "-v",
+            "/path/hh-mcp-comfyui/workflows:/app/workflows",
+            "-i",
+            "--rm",
+            "zjf2671/hh-mcp-comfyui"
+        ],
+        "env": {
+          "COMFYUI_API_BASE": "http://127.0.0.1:8188"
         }
+      }
     }
   }
   ```
@@ -224,7 +245,10 @@
   $ pip install hh_mcp_comfyui
   $ npx @modelcontextprotocol/inspector python -m hh_mcp_comfyui
   ``` 
-
+ - **docker方式**
+    ```bash
+    $ npx @modelcontextprotocol/inspector docker run --net=host -i --rm zjf2671/hh-mcp-comfyui
+    ``` 
 然后点击连接如图即可调试：
 ![alt text](images/image-1.png)
 
@@ -232,7 +256,7 @@
 
 ### 添加新工作流
 
-1. 将工作流JSON文件放入`src/hh_mcp_comfyui/workflows`目录中
+1. 将工作流JSON文件放入`/path/hh_mcp_comfyui/workflows`目录中
   
     如果是uvx和pip启动方式请看上面 **样例工作流copy到指定工作流目录** 的使用方式
 

@@ -26,14 +26,15 @@ FROM python:3.12-slim-bookworm
 
 WORKDIR /app
 
-ADD example/workflows /app/src/hh_mcp_comfyui/workflows
-
-COPY --from=uv /root/.local /root/.local
 COPY --from=uv --chown=app:app /app/.venv /app/.venv
 
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
-ENV COMFYUI_API_BASE="http://127.0.0.1:8188"
+ENV COMFYUI_API_BASE http://127.0.0.1:8188
+ENV COMFYUI_WORKFLOWS_DIR /app/workflows
+
+ADD example/workflows ${COMFYUI_WORKFLOWS_DIR}
+#VOLUME ${COMFYUI_WORKFLOWS_DIR}
 
 # when running the container, add --db-path and a bind mount to the host's db file
 ENTRYPOINT ["hh-mcp-comfyui"]
