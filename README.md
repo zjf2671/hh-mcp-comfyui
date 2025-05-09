@@ -2,8 +2,9 @@
 
 [![English](https://img.shields.io/badge/English-Click-yellow)](docs/README.EN.md)
 [![简体中文](https://img.shields.io/badge/简体中文-点击查看-orange)](README.md)
-![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)
+![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![smithery badge](https://smithery.ai/badge/@zjf2671/hh-mcp-comfyui)](https://smithery.ai/server/@zjf2671/hh-mcp-comfyui)
 
 这是一个基于Model Context Protocol (MCP)的ComfyUI图像生成服务，通过API调用本地ComfyUI实例生成图片。
 
@@ -14,6 +15,7 @@
 - 自动加载workflows目录下的工作流文件作为资源
 
 ## 新增功能记录
+- [2025-05-09] 增加docker构建方式,支持Python 3.12+
 - [2025-05-07] 增加pip构建方式
 - [2025-05-06] 把项目目录src/hh修改成src/hh_mcp_comfyui,增加uvx构建方式
 - [2025-04-26] 增加图生图和移除背景样例工作流及支持图生图工具
@@ -30,7 +32,7 @@
 
 ## 安装依赖
 
-**1. 确保已安装Python 3.13+**
+**1. 确保已安装Python 3.12+**
 
 **2. 使用uv管理Python环境：**
 - 安装uv:
@@ -171,6 +173,22 @@
           "hh_mcp_comfyui"
         ]
       }
+    }
+  }
+  ```
+  **docker MCP服务配置**
+  ```bash
+  {
+    "mcpServers": {
+        "hh-mcp-comfyui": {
+            "command": "docker",
+            "args": [
+                "run",
+                "-i",
+                "--rm",
+                "zjf2671/hh-mcp-comfyui"
+            ]
+        }
     }
   }
   ```

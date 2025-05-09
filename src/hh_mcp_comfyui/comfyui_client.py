@@ -19,7 +19,7 @@ from pydantic import HttpUrl
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-COMFYUI_API_BASE = "http://127.0.0.1:8188"
+COMFYUI_API_BASE = os.getenv("COMFYUI_API_BASE", "http://127.0.0.1:8188")
 WS_URL = f"ws://{COMFYUI_API_BASE.split('//')[1]}/ws"
 WORKFLOWS_DIR = Path(__file__).parent / "workflows"
 DEFAULT_WORKFLOW = "t2image_bizyair_flux.json" # Default workflow if none specified
@@ -644,6 +644,6 @@ if __name__ == "__main__":
 
     import asyncio
     # 测试文生图
-    # asyncio.run(test_modify_t2i_workflow()) 
+    asyncio.run(test_modify_t2i_workflow()) 
     # 测试图生图
-    asyncio.run(test_modify_i2i_workflow())
+    # asyncio.run(test_modify_i2i_workflow())

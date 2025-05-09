@@ -2,8 +2,9 @@
 
 [![English](https://img.shields.io/badge/English-Click-yellow)](README.EN.md)
 [![简体中文](https://img.shields.io/badge/简体中文-点击查看-orange)](../README.md)
-![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)
+![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![smithery badge](https://smithery.ai/badge/@zjf2671/hh-mcp-comfyui)](https://smithery.ai/server/@zjf2671/hh-mcp-comfyui)
 
 This is a ComfyUI image generation service based on Model Context Protocol (MCP), which generates images by calling a local ComfyUI instance through API.
 
@@ -14,6 +15,7 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
 - Automatically loads workflow files from the workflows directory as resources
 
 ## Update History
+- [2025-05-09] Added docker build method, supports Python 3.12+
 - [2025-05-07] Added pip build method
 - [2025-05-06] Changed project directory from src/hh to src/hh_mcp_comfyui, added uvx build method
 - [2025-04-26] Added image-to-image and background removal sample workflows, and support for image-to-image tool
@@ -30,7 +32,7 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
 
 ## Installation
 
-**1. Ensure Python 3.13+ is installed**
+**1. Ensure Python 3.12+ is installed**
 
 **2. Use uv to manage Python environment:**
 - Install uv:
