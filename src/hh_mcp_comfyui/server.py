@@ -26,7 +26,7 @@ mcp = FastMCP(
     "ComfyUI_Generator",
     version="0.1.0",
     description="MCP Server to generate images using a local ComfyUI instance.",
-    timeout=180  # Increase timeout to 300 seconds (5 minutes)
+    timeout=300  # Increase timeout to 300 seconds (5 minutes)
 )
 
 # --- Resource Loading ---
@@ -237,8 +237,7 @@ def generate_image_prompt(
 def main():
         # Ensure the workflows directory exists relative to this script
     # This helps if running the script directly for testing
-    script_dir = Path(__file__).parent
-    workflows_path = script_dir / "workflows"
+    workflows_path = workflow_dir
     if not workflows_path.exists():
         try:
             workflows_path.mkdir()
