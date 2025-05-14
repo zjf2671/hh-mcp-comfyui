@@ -15,6 +15,7 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
 - Automatically loads workflow files from the workflows directory as resources
 
 ## Update History
+- [2025-05-11] Added dynamic configuration for workflow file directory
 - [2025-05-09] Added docker build method, supports Python 3.12+
 - [2025-05-07] Added pip build method
 - [2025-05-06] Changed project directory from src/hh to src/hh_mcp_comfyui, added uvx build method
@@ -144,7 +145,11 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
           "absolute_project_path (e.g.: D:/hh-mcp-comfyui)",
           "run",
           "hh-mcp-comfyui"
-        ]
+        ],
+        "env": {
+          "COMFYUI_API_BASE": "http://127.0.0.1:8188",
+          "COMFYUI_WORKFLOWS_DIR": "/path/hh-mcp-comfyui/workflows"
+        }
       }
     }
   }
@@ -161,7 +166,11 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
         "command": "uvx",
         "args": [
           "hh-mcp-comfyui"
-        ]
+        ],
+        "env": {
+          "COMFYUI_API_BASE": "http://127.0.0.1:8188",
+          "COMFYUI_WORKFLOWS_DIR": "/path/hh-mcp-comfyui/workflows"
+        }
       }
     }
   }
@@ -181,7 +190,11 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
         "args": [
           "-m",
           "hh_mcp_comfyui"
-        ]
+        ],
+        "env": {
+          "COMFYUI_API_BASE": "http://127.0.0.1:8188",
+          "COMFYUI_WORKFLOWS_DIR": "/path/hh-mcp-comfyui/workflows"
+        }
       }
     }
   }
@@ -198,10 +211,16 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
             "command": "docker",
             "args": [
                 "run",
+                "--net=host",
+                "-v",
+                "/path/hh-mcp-comfyui/workflows:/app/workflows",
                 "-i",
                 "--rm",
                 "zjf2671/hh-mcp-comfyui"
-            ]
+            ],
+            "env": {
+              "COMFYUI_API_BASE": "http://127.0.0.1:8188"
+            }
         }
     }
   }
@@ -225,6 +244,10 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
   $ pip install hh_mcp_comfyui
   $ npx @modelcontextprotocol/inspector python -m hh_mcp_comfyui
   ``` 
+ - **docker method**
+    ```bash
+    $ npx @modelcontextprotocol/inspector docker run --net=host -i --rm zjf2671/hh-mcp-comfyui
+    ``` 
 
 Then click connect as shown below to debug:
 ![alt text](../images/image-1.png)

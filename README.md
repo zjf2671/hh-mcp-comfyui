@@ -203,7 +203,7 @@
 <details>
   <summary>docker MCP服务配置</summary>
 
-  **前提是已安装docker*
+  **前提是已安装docker**
 
   ```bash
   {
