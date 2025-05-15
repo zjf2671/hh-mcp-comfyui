@@ -47,7 +47,7 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
   # Update uv (optional):
   $ uv self update
   ```
-- Initialize project environment:
+- Initialize project environment (**This initialization is only required when building from source and running with uv command**):
   ```bash
   # Clone the repository.
   $ git clone https://github.com/zjf2671/hh-mcp-comfyui.git

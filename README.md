@@ -47,7 +47,7 @@
   # 更新uv(非必要操作):
   $ uv self update
   ```
-- 初始化项目环境：
+- 初始化项目环境（**只有当用源码构建，并用uv命令运行的时候需要进行这里的初始化动作**）：
   ```bash
   # Clone the repository.
   $ git clone https://github.com/zjf2671/hh-mcp-comfyui.git
