@@ -3,7 +3,7 @@
 [![English](https://img.shields.io/badge/English-Click-yellow)](README.EN.md)
 [![简体中文](https://img.shields.io/badge/简体中文-点击查看-orange)](../README.md)
 ![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](../LiCENSE)
 [![smithery badge](https://smithery.ai/badge/@zjf2671/hh-mcp-comfyui)](https://smithery.ai/server/@zjf2671/hh-mcp-comfyui)
 
 This is a ComfyUI image generation service based on Model Context Protocol (MCP), which generates images by calling a local ComfyUI instance through API.
@@ -47,39 +47,8 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
   # Update uv (optional):
   $ uv self update
   ```
-- Initialize project environment (**This initialization is only required when building from source and running with uv command**):
-  ```bash
-  # Clone the repository.
-  $ git clone https://github.com/zjf2671/hh-mcp-comfyui.git
-
-  $ cd hh-mcp-comfyui
-
-  # Initialize venv
-  $ uv venv
-
-  # Activate the virtual environment.
-  $ .venv\Scripts\activate
-
-  # Install dependencies.
-  $ uv lock
-  Resolved 30 packages in 1ms
-
-  # Sync dependencies.
-  $ uv sync
-  Resolved 30 packages in 2.54s
-  Audited 29 package in 0.02ms
-  ```
 
 ## Test Run Service
-- **uv method**
-
-  ```bash
-  $ uv --directory your_local_install_directory/hh-mcp-comfyui run hh-mcp-comfyui
-
-  INFO:__main__:Scanning for workflows in: D:\cygitproject\hh-mcp-comfyui\src\hh_mcp_comfyui\workflows
-  INFO:__main__:Registered resource: workflow://t2image_bizyair_flux -> t2image_bizyair_flux.json
-  INFO:__main__:Starting ComfyUI MCP Server...
-  ```
 - **uvx method**
   ```bash
   $ uvx hh-mcp-comfyui
@@ -98,63 +67,10 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
   ```
 **The above information indicates successful service startup**
 
-## Copy Sample Workflows to Specified Workflow Directory:
-- **uv**
-  ```bash
-  # Enter project directory
-  $ cd hh-mcp-comfyui
-
-  # Create workflows directory if it doesn't exist (this directory location cannot be changed)
-  $ mkdir src\hh_mcp_comfyui\workflows
-
-  # Copy sample workflows
-  $ cp .\example\workflows\* .\src\hh_mcp_comfyui\workflows\
-
-  ```
-  (**Important Note**: If using uvx or pip method below, find your local installation directory to add sample workflows, then restart your MCP service. You can locate your installation directory as shown below)
-- **uvx**
-  ```bash
-  $ uvx hh-mcp-comfyui
-  ```
-  ![alt text](../images/image-2.png)
-- **pip**
-  
-   ```bash
-  # First install dependencies
-  $ pip install hh_mcp_comfyui
-  $ python -m hh_mcp_comfyui
-  ```
-
-  ![alt text](../images/image-3.png)
-
 ## Usage
 > **Ensure local ComfyUI instance is running (default address: http://127.0.0.1:8188) [ComfyUI Installation](https://github.com/comfyanonymous/ComfyUI.git)**
 
 ### Usage in Cherry Studio, Cline, Cursor and other clients
-
-<details>
-  <summary>uv MCP Service Configuration</summary>
-
-  ```bash
-  {
-    "mcpServers": {
-      "hh-mcp-comfyui": {
-        "command": "uv",
-        "args": [
-          "--directory",
-          "absolute_project_path (e.g.: D:/hh-mcp-comfyui)",
-          "run",
-          "hh-mcp-comfyui"
-        ],
-        "env": {
-          "COMFYUI_API_BASE": "http://127.0.0.1:8188",
-          "COMFYUI_WORKFLOWS_DIR": "/path/hh-mcp-comfyui/workflows"
-        }
-      }
-    }
-  }
-  ```
-</details>
 
 <details>
   <summary>uvx MCP Service Configuration</summary>
@@ -227,14 +143,28 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
   ```
 </details>
 
+## Copy Sample Workflows to Specified Workflow Directory:
+
+  (**Important Note**: Use the following uvx or pip methods to find the location of your installation workflow directory, add the sample workflow to it, and then restart your MCP service)
+- **uvx**
+  ```bash
+  $ uvx hh-mcp-comfyui
+  ```
+  ![alt text](../images/image-2.png)
+- **pip**
+  
+   ```bash
+  # First install dependencies
+  $ pip install hh_mcp_comfyui
+  $ python -m hh_mcp_comfyui
+  ```
+
+  ![alt text](../images/image-3.png)
+
 ## Testing
 
 > **Use MCP Inspector to test server tools**
   
-- **uv method**
-  ```bash
-  $ npx @modelcontextprotocol/inspector uv --directory your_local_install_directory/hh-mcp-comfyui run hh-mcp-comfyui
-  ```
 - **uvx method**
   ```bash
   $ npx @modelcontextprotocol/inspector uvx hh-mcp-comfyui
@@ -252,21 +182,25 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
 Then click connect as shown below to debug:
 ![alt text](../images/image-1.png)
 
-## Extensions
+## Usage Notes (Especially for those new to ComfyUI)
 
-### Add New Workflows
+- The default workflow is `t2image_bizyair_flux`
+- The default picture size is 1024x1024
+- All JSON workflow files in the workflows directory are automatically loaded when the service starts
+- If you are using the ** sample workflow in this project ** and need to download a plug-in comfyui, please check out for details: [Sample Workflow Plug-in Installation Tutorial](https://ziitefe2yxn.feishu.cn/wiki/PlSmwBbBWiA0iDkc07scb4EEnHc)
+- If you use your local comfyui workflow, you must first ensure that your workflow can run normally in comfyui, and then you need to export the JSON format (API) and place it in your local `/path/hh_mcp_comfyui/workflows` directory
+
+## Add New Workflows
 
 1. Place workflow JSON files in `src/hh_mcp_comfyui/workflows` directory
   
-    For uvx and pip startup methods, refer to **Copy Sample Workflows to Specified Workflow Directory** above
+    For uvx and pip startup methods, refer to 《**Copy Sample Workflows to Specified Workflow Directory**》 above
 
 2. Restart service to automatically load new workflows
 
-### Developer Custom Parameters
+## Development
 
-Modify the `generate_image` tool definition in `server.py` to add new parameters
-
-## Project Structure
+### Project Structure
 
 ```
 .
@@ -288,15 +222,67 @@ Modify the `generate_image` tool definition in `server.py` to add new parameters
 │       └── workflows/           # Workflow files directory
 ```
 
-## Usage Notes (Especially for those new to ComfyUI)
 
-- Default workflow is `t2image_bizyair_flux`
-- Default image size is 1024x1024
-- Service automatically loads all JSON workflow files from workflows directory on startup
-- If using **sample workflows** from this project, you need to download a plugin in ComfyUI. See details: [Sample Workflow Plugin Installation Tutorial](https://ziitefe2yxn.feishu.cn/wiki/PlSmwBbBWiA0iDkc07scb4EEnHc)
-- If using your local ComfyUI workflows, first ensure they work normally in ComfyUI, then export them in API JSON format and place in src/workflows directory
+ ### Initialize project development environment:  
 
+  ```bash
+  # Clone the repository.
+  $ git clone https://github.com/zjf2671/hh-mcp-comfyui.git
 
+  $ cd hh-mcp-comfyui
+
+  # Initialized venv
+  $ uv venv
+
+  # Activate the virtual environment.
+  $ .venv\Scripts\activate
+
+  # Install dependencies.
+  $ uv lock
+  Resolved 30 packages in 1ms
+
+  # sync dependencies.
+  $ uv sync
+  Resolved 30 packages in 2.54s
+  Audited 29 package in 0.02ms
+  ```
+
+### Check if the service is normal
+
+  ```bash
+  $ uv --directory your_local_install_directory/hh-mcp-comfyui run hh-mcp-comfyui
+
+  INFO:__main__:Scanning for workflows in: D:\cygitproject\hh-mcp-comfyui\src\hh_mcp_comfyui\workflows
+  INFO:__main__:Registered resource: workflow://t2image_bizyair_flux -> t2image_bizyair_flux.json
+  INFO:__main__:Starting ComfyUI MCP Server...
+  ```
+### Use MCP Inspector to test server tools
+  
+  ```bash
+  $ npx @modelcontextprotocol/inspector uv --directory your_local_install_directory/hh-mcp-comfyui run hh-mcp-comfyui
+  ```
+
+### MCP Configuration
+  
+  ```bash
+  {
+    "mcpServers": {
+      "hh-mcp-comfyui": {
+        "command": "uv",
+        "args": [
+          "--directory",
+          "absolute_project_path (e.g.: D:/hh-mcp-comfyui)",
+          "run",
+          "hh-mcp-comfyui"
+        ],
+        "env": {
+          "COMFYUI_API_BASE": "http://127.0.0.1:8188",
+          "COMFYUI_WORKFLOWS_DIR": "/path/hh-mcp-comfyui/workflows"
+        }
+      }
+    }
+  }
+  ```
 ## Contribution
 
 1. Fork the project
