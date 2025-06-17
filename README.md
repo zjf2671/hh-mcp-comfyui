@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/zjf2671-hh-mcp-comfyui-badge.png)](https://mseep.ai/app/zjf2671-hh-mcp-comfyui)
+
 # ComfyUI MCP 服务
 
 [![English](https://img.shields.io/badge/English-Click-yellow)](docs/README.EN.md)
