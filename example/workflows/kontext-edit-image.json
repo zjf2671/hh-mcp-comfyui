@@ -1,0 +1,274 @@
+{
+  "6": {
+    "inputs": {
+      "text": "Transform the image into a Ghibli-style animation. Replace all elements with soft, hand-painted textures featuring pastel colors and gentle light diffusion. Add whimsical details like floating dust particles, soft-edged clouds, and exaggerated nature elements (oversized leaves/flowers). Maintain the signature dreamy atmosphere with warm, nostalgic lighting. ultra detailed, masterpiece, high quality",
+      "speak_and_recognation": {
+        "__value__": [
+          false,
+          true
+        ]
+      },
+      "clip": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "BizyAir_CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Positive Prompt)"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "13",
+        0
+      ],
+      "vae": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "BizyAir_VAEDecode",
+    "_meta": {
+      "title": "☁️BizyAir VAE Decode"
+    }
+  },
+  "9": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "10": {
+    "inputs": {
+      "vae_name": "flux/ae.sft"
+    },
+    "class_type": "BizyAir_VAELoader",
+    "_meta": {
+      "title": "☁️BizyAir Load VAE"
+    }
+  },
+  "11": {
+    "inputs": {
+      "clip_name1": "t5xxl_fp16.safetensors",
+      "clip_name2": "clip_l.safetensors",
+      "type": "flux"
+    },
+    "class_type": "BizyAir_DualCLIPLoader",
+    "_meta": {
+      "title": "☁️BizyAir DualCLIPLoader"
+    }
+  },
+  "12": {
+    "inputs": {
+      "unet_name": "flux1-dev-kontext-onediff.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "BizyAir_UNETLoader",
+    "_meta": {
+      "title": "☁️BizyAir Load Diffusion Model"
+    }
+  },
+  "13": {
+    "inputs": {
+      "noise": [
+        "25",
+        0
+      ],
+      "guider": [
+        "22",
+        0
+      ],
+      "sampler": [
+        "16",
+        0
+      ],
+      "sigmas": [
+        "17",
+        0
+      ],
+      "latent_image": [
+        "27",
+        0
+      ]
+    },
+    "class_type": "BizyAir_SamplerCustomAdvanced",
+    "_meta": {
+      "title": "☁️BizyAir SamplerCustomAdvanced"
+    }
+  },
+  "16": {
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "class_type": "BizyAir_KSamplerSelect",
+    "_meta": {
+      "title": "☁️BizyAir KSamplerSelect"
+    }
+  },
+  "17": {
+    "inputs": {
+      "scheduler": "simple",
+      "steps": 20,
+      "denoise": 1,
+      "model": [
+        "30",
+        0
+      ]
+    },
+    "class_type": "BizyAir_BasicScheduler",
+    "_meta": {
+      "title": "☁️BizyAir BasicScheduler"
+    }
+  },
+  "22": {
+    "inputs": {
+      "model": [
+        "30",
+        0
+      ],
+      "conditioning": [
+        "42",
+        0
+      ]
+    },
+    "class_type": "BizyAir_BasicGuider",
+    "_meta": {
+      "title": "☁️BizyAir BasicGuider"
+    }
+  },
+  "25": {
+    "inputs": {
+      "noise_seed": 6
+    },
+    "class_type": "BizyAir_RandomNoise",
+    "_meta": {
+      "title": "☁️BizyAir RandomNoise"
+    }
+  },
+  "26": {
+    "inputs": {
+      "guidance": 2.5,
+      "conditioning": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "BizyAir_FluxGuidance",
+    "_meta": {
+      "title": "☁️BizyAir FluxGuidance"
+    }
+  },
+  "27": {
+    "inputs": {
+      "width": [
+        "64",
+        0
+      ],
+      "height": [
+        "64",
+        1
+      ],
+      "batch_size": 1
+    },
+    "class_type": "EmptySD3LatentImage",
+    "_meta": {
+      "title": "EmptySD3LatentImage"
+    }
+  },
+  "30": {
+    "inputs": {
+      "max_shift": 1.15,
+      "base_shift": 0.5,
+      "width": [
+        "64",
+        0
+      ],
+      "height": [
+        "64",
+        1
+      ],
+      "model": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "BizyAir_ModelSamplingFlux",
+    "_meta": {
+      "title": "☁️BizyAir ModelSamplingFlux"
+    }
+  },
+  "39": {
+    "inputs": {
+      "pixels": [
+        "40",
+        0
+      ],
+      "vae": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "BizyAir_VAEEncode",
+    "_meta": {
+      "title": "☁️BizyAir VAE Encode"
+    }
+  },
+  "40": {
+    "inputs": {
+      "image": [
+        "66",
+        0
+      ]
+    },
+    "class_type": "FluxKontextImageScale",
+    "_meta": {
+      "title": "FluxKontextImageScale"
+    }
+  },
+  "42": {
+    "inputs": {
+      "conditioning": [
+        "26",
+        0
+      ],
+      "latent": [
+        "39",
+        0
+      ]
+    },
+    "class_type": "BizyAir_ReferenceLatent",
+    "_meta": {
+      "title": "☁️BizyAir ReferenceLatent"
+    }
+  },
+  "64": {
+    "inputs": {
+      "image": [
+        "66",
+        0
+      ]
+    },
+    "class_type": "GetImageSize",
+    "_meta": {
+      "title": "Get Image Size"
+    }
+  },
+  "66": {
+    "inputs": {
+      "image": "pasted/image (98).png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  }
+}

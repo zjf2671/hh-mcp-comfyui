@@ -15,6 +15,8 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
 - Automatically loads workflow files from the workflows directory as resources
 
 ## Update History
+- [2025-06-29] Support the Flux Kontext image editing workflow
+![alt text](../images/edit-image.jpg)
 - [2025-05-11] Added dynamic configuration for workflow file directory
 - [2025-05-09] Added docker build method, supports Python 3.12+
 - [2025-05-07] Added pip build method

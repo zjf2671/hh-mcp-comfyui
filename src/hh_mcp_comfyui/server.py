@@ -73,21 +73,21 @@ else:
 
 @mcp.tool()
 async def generate_image_from_text(
-    prompt: str = "a beautiful landscape",  # 添加默认prompt值
+    prompt: str,  # 添加默认prompt值
+    workflow_name: str,
     width: int = 1024,
     height: int = 1024,
-    workflow_name: str = "t2image_bizyair_flux",
-    seed: Optional[int] = None,  # Default seed value
+    seed: Optional[int] = None  # Default seed value
 ) -> str:
     """
     Generates an image using ComfyUI based on the provided prompt and optional parameters.
 
     Args:
         prompt: The positive text prompt (It must be in English).
+        workflow_name: The name of the workflow file (without .json) from the 'workflows' directory to use.
+                    If None, uses the default workflow ('t2image_bizyair_flux').
         width: The desired width of the image (default: 1024).
         height: The desired height of the image (default: 1024).
-        workflow_name: The name of the workflow file (without .json) from the 'workflows' directory to use.
-                       If None, uses the default workflow ('t2image_bizyair_flux').
     Returns:
         A URL to view the generated image.
     """
@@ -119,20 +119,20 @@ async def generate_image_from_text(
 
 @mcp.tool()
 async def generate_image_from_image(
-    prompt: str = "modify the image based on prompt",
+    prompt: str,
+    workflow_name: str, # Default to the I2I workflow
     image_path_or_url: Union[HttpUrl, str, bytes] = Field(..., description="URL, local path, or image data as bytes."),
-    denoise: float = Field(default=0.85, ge=0.0, le=1.0, description="Denoising strength (0.0 to 1.0). Higher values mean more changes from the original image."),
-    workflow_name: str = "i2image_bizyair_flux", # Default to the I2I workflow
-    seed: Optional[int] = None, # Allow optional seed override
+    denoise: float = 1.0,
+    seed: Optional[int] = None # Allow optional seed override
 ) -> str:
     """
     Generates an image using ComfyUI based on an input image (URL, local path, or bytes), prompt, and optional parameters.
 
     Args:
         prompt: The positive text prompt (It must be in English).
-        image_path_or_url: The URL or local file path or image data as bytes of the input image.
-        denoise: Denoising strength (0.0 to 1.0). Controls how much the original image influences the result.
         workflow_name: The name of the I2I workflow file (without .json) to use (default: 'I2Image_bizyair_flux').
+        image_path_or_url: The URL or local file path or image data as bytes of the input image.
+        denoise: Denoising strength (0.0 to 1.0). Controls how much the original image influences the result. to use (default: '1.0')
         seed: Optional random seed for reproducibility.
     Returns:
         A URL to view the generated image or an error message.

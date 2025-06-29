@@ -67,7 +67,8 @@ def find_load_image_node(workflow: Dict[str, Any]) -> Optional[str]:
         "LoadImage", # Standard
         "LoadImageMask", # If mask is also needed, but we focus on basic LoadImage
         "ImageLoad", # Alternative naming
-        "LoadImageBase64" # If using base64 input
+        "LoadImageBase64", # If using base64 input
+        "LoadImageOutput"   # Alternative naming
     ]
     node_id = find_node_by_class_type(workflow, LOAD_IMAGE_TYPES)
     if node_id:
@@ -108,8 +109,10 @@ def find_latent_by_class_type(workflow: Dict[str, Any]) -> Optional[str]:
     """Finds the first node ID matching any of the given class_types."""
     LATENT_IMAGE_TYPES = [
         "EmptyLatentImage",  # Standard
+        "EmptySD3LatentImage", # SD3 variant
         "BizyAir_CogView4_6B_Pipe",  # Custom variant
-        "EmptyLatentImageAdvanced"  # Advanced variant
+        "EmptyLatentImageAdvanced",  # Advanced variant
+        "BizyAir_ModelSamplingFlux" # ModelSamplingFlux variant
     ]
     return find_node_by_class_type(workflow, LATENT_IMAGE_TYPES)
 
@@ -589,12 +592,12 @@ async def test_modify_t2i_workflow():
 async def test_modify_i2i_workflow():
     try:
         # 1. 加载一个I2I工作流
-        workflow = load_workflow("I2Image_bizyair_flux.json")  # 确保此文件存在
+        workflow = load_workflow("kontext-edit-image.json")  # 确保此文件存在
 
         # 2. 定义测试参数
-        prompt = "A futuristic cityscape with flying cars"
-        image_path_or_url = "images/ComfyUI_00020_.png"  # 替换为实际的图片路径或URL
-        denoise = 0.75
+        prompt = "Transform the image into a Ghibli-style animation. Replace all elements with soft, hand-painted textures featuring pastel colors and gentle light diffusion. Add whimsical details like floating dust particles, soft-edged clouds, and exaggerated nature elements (oversized leaves/flowers). Maintain the signature dreamy atmosphere with warm, nostalgic lighting. ultra detailed, masterpiece, high quality"
+        image_path_or_url = "images/ComfyUI_i2i_00012_.png"  # 替换为实际的图片路径或URL
+        denoise = 1.0
         seed = 12345
 
         # 3. 调用 modify_i2i_workflow
@@ -644,6 +647,6 @@ if __name__ == "__main__":
 
     import asyncio
     # 测试文生图
-    asyncio.run(test_modify_t2i_workflow()) 
+    # asyncio.run(test_modify_t2i_workflow()) 
     # 测试图生图
-    # asyncio.run(test_modify_i2i_workflow())
+    asyncio.run(test_modify_i2i_workflow())
