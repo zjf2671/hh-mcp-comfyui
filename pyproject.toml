@@ -1,6 +1,6 @@
 [project]
 name = "hh-mcp-comfyui"
-version = "2025.04.20.4"
+version = "2025.07.01.01"
 description = "基于Model Context Protocol (MCP)的ComfyUI图像生成服务，通过API调用本地ComfyUI实例生成图片,实现自然语言生图自由"
 readme = "README.md"
 license = {file = "LICENSE"}
