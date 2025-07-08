@@ -83,7 +83,7 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
       "hh-mcp-comfyui": {
         "command": "uvx",
         "args": [
-          "hh-mcp-comfyui"
+          "hh-mcp-comfyui@latest"
         ],
         "env": {
           "COMFYUI_API_BASE": "http://127.0.0.1:8188",
@@ -134,7 +134,7 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
                 "/path/hh-mcp-comfyui/workflows:/app/workflows",
                 "-i",
                 "--rm",
-                "zjf2671/hh-mcp-comfyui"
+                "zjf2671/hh-mcp-comfyui:latest"
             ],
             "env": {
               "COMFYUI_API_BASE": "http://127.0.0.1:8188"

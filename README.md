@@ -86,7 +86,7 @@
       "hh-mcp-comfyui": {
         "command": "uvx",
         "args": [
-          "hh-mcp-comfyui"
+          "hh-mcp-comfyui@latest"
         ],
         "env": {
           "COMFYUI_API_BASE": "http://127.0.0.1:8188",
@@ -139,7 +139,7 @@
             "/path/hh-mcp-comfyui/workflows:/app/workflows",
             "-i",
             "--rm",
-            "zjf2671/hh-mcp-comfyui"
+            "zjf2671/hh-mcp-comfyui:latest"
         ],
         "env": {
           "COMFYUI_API_BASE": "http://127.0.0.1:8188"
