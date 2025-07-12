@@ -16,7 +16,7 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
 
 ## Update History
 - [2025-06-29] Support the Flux Kontext image editing workflow
-![alt text](../images/edit-image.jpg)
+![edit-image-85457440acc11a9f386f8ef284fd62f2.jpg](https://image.harryzhang.site/2025/07/edit-image-85457440acc11a9f386f8ef284fd62f2.jpg)
 - [2025-05-11] Added dynamic configuration for workflow file directory
 - [2025-05-09] Added docker build method, supports Python 3.12+
 - [2025-05-07] Added pip build method
@@ -27,11 +27,11 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
 ## Results
 
 - **Effect in Cherry Studio**
-![alt text](../images/image.png)
+![image-b8f946109d63fe1ccb5e2d63933e3f9e.png](https://image.harryzhang.site/2025/07/image-b8f946109d63fe1ccb5e2d63933e3f9e.png)
 
 - **Effect in Cline**
-![alt text](../images/cline_gen_image.png)
-![alt text](../images/ComfyUI_00020_.png)
+![cline_gen_image-48d8515e0b59cd313879c62a1546162d.png](https://image.harryzhang.site/2025/07/cline_gen_image-48d8515e0b59cd313879c62a1546162d.png)
+![ComfyUI_00020_-d9171f87fc9e67fcc1966cdbfb952a0c.png](https://image.harryzhang.site/2025/07/ComfyUI_00020_-d9171f87fc9e67fcc1966cdbfb952a0c.png)
 
 ## Installation
 
@@ -152,7 +152,7 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
   ```bash
   $ uvx hh-mcp-comfyui
   ```
-  ![alt text](../images/image-2.png)
+ ![image-2-f89caf964efbccdad7b6fa2672d1cac0.png](https://image.harryzhang.site/2025/07/image-2-f89caf964efbccdad7b6fa2672d1cac0.png)
 - **pip**
   
    ```bash
@@ -160,8 +160,7 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
   $ pip install hh_mcp_comfyui
   $ python -m hh_mcp_comfyui
   ```
-
-  ![alt text](../images/image-3.png)
+  ![image-3-03a069f40492fea9947a351b8707aa3f.png](https://image.harryzhang.site/2025/07/image-3-03a069f40492fea9947a351b8707aa3f.png)
 
 ## Testing
 
@@ -182,7 +181,7 @@ This is a ComfyUI image generation service based on Model Context Protocol (MCP)
     ``` 
 
 Then click connect as shown below to debug:
-![alt text](../images/image-1.png)
+![image-1-44c6a003ee317093afe5a61cfe028720.png](https://image.harryzhang.site/2025/07/image-1-44c6a003ee317093afe5a61cfe028720.png)
 
 ## Usage Notes (Especially for those new to ComfyUI)
 
