@@ -6,7 +6,6 @@
 [![简体中文](https://img.shields.io/badge/简体中文-点击查看-orange)](README.md)
 ![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LiCENSE)
-[![smithery badge](https://smithery.ai/badge/@zjf2671/hh-mcp-comfyui)](https://smithery.ai/server/@zjf2671/hh-mcp-comfyui)
 
 这是一个基于Model Context Protocol (MCP)的ComfyUI图像生成服务，通过API调用本地ComfyUI实例生成图片。
 
